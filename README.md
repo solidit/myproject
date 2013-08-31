@@ -28,7 +28,7 @@ Web Service Django for training in AWS Autoscaling
 
     $ service django start
 
-### Check django is nunning
+### Check django is running
 
     $ ps -ef | grep python
 
