@@ -43,7 +43,7 @@ Run `ntsysv` with root and set autostart nginx and click ok
 
     $ ps -ef | grep nginx
 
-### Access your ec3 instance in your browser or run this command
+### Access your ec2 instance in your browser or run this command
 
     $ curl http://ec2-54-242-246-245.compute-1.amazonaws.com:8000/ws/
 
@@ -52,7 +52,7 @@ reboot your instance with "`reboot`" command
 Settting AWS Credentials
 ------------------------
 
-    $ vi ~/.bach_profile
+    $ vi ~/.bash_profile
 
     export AWS_ACCESS_KEY=AKIAXXXXXXXXXXXX5SMQ
     export AWS_SECRET_KEY=pfURXXxxxxXXXXXxxxxXXXXXXXxXXxxxxxxX3Opt
