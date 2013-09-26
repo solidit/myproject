@@ -145,9 +145,6 @@ AWS_S3_CUSTOM_DOMAIN = "d2jfhjcqz2ztph.cloudfront.net"
 
 #AWS_S3_CUSTOM_DOMAIN = '%s.s3-website-us-west-1.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
 
-
-
-
 # http://dynamodb-mapper.readthedocs.org/en/latest/
 # Amazon DynamoDB
 # yes | sudo pip install dynamodb-mapper
@@ -166,7 +163,7 @@ if ENABLE_CLICK_TRACKING:
         try:
             conn.create_table(obj_click, read_units=settings.DATABASES["default"]["READ_UNITS"], write_units=settings.DATABASES["default"]["WRITE_UNITS"], wait_for_active=False)
         except Exception, args:
-            print Exception, args
+            print args
         
         create_dynamoDB()
 
