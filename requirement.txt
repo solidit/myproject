@@ -1,0 +1,8 @@
+Django==1.5.4
+PIL==1.1.7
+boto==2.13.3
+django-storages==1.1.8
+dynamodb-mapper==1.8.1
+onctuous==0.5.84
+pytz==2013d
+wsgiref==0.1.2
