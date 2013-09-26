@@ -8,9 +8,9 @@ PROCESSNAME="fcgi"
 
 DJANGO_SETTINGS="myproject.settings"
 
-FCGI_PATH="/opt/myproject/fcgi"
-FCGI_LOG="/opt/myproject/logs"
-NGINX_PATH="/opt/myproject/nginx"
+FCGI_PATH="~/fcgi"
+FCGI_LOG="~/logs"
+NGINX_PATH="~/nginx"
 
 if [ ! -d $FCGI_PATH ]; then
   mkdir -p $FCGI_PATH
@@ -26,23 +26,23 @@ fi
 
 P=$FCGI_PATH/fcgi.pid
 S=$FCGI_PATH/fcgi.sock
-E=$FCGI_LOG/django_fcgi.errlog
-O=$FCGI_LOG/django_fcgi.outlog
+E=$FCGI_LOG/fcgi.errlog
+O=$FCGI_LOG/fcgi.outlog
 
 start(){
   sudo chmod -R 777 $FCGI_PATH
   sudo chmod -R 777 $FCGI_LOG
 
-  cd /opt/myproject && python manage.py runfcgi daemonize=true \
-                                                      maxchildren=10 \
-                                                      maxspare=5 \
-                                                      minspare=2 \
-                                                      method=prefork \
-                                                      socket=$S \
-                                                      pidfile=$P \
-                                                      errlog=$E \
-                                                      outlog=$O \
-                                                      --settings=$DJANGO_SETTINGS && chmod 777 $S
+  python manage.py runfcgi daemonize=true \
+                           maxchildren=10 \
+                           maxspare=5 \
+                           minspare=2 \
+                           method=prefork \
+                           socket=$S \
+                           pidfile=$P \
+                           errlog=$E \
+                           outlog=$O \
+                           --settings=$DJANGO_SETTINGS && chmod 777 $S
 }
 
 stop(){

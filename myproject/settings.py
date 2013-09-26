@@ -1,7 +1,54 @@
+# -*- coding: utf-8 -*-
+
+"""
+Created on 12/12/2011
+@author: romuloigor@solidit.com.br 
+"""
+
 # Django settings for myproject project.
+import os, sys, socket
+
+# Recomendations using Virtualenv.
+# yes | sudo apt-get install python-pip
+# yes | sudo pip install virtualenv
+# yes | sudo pip install virtualenvwrapper
+# source /usr/local/bin/virtualenvwrapper.sh
+# mkvirtualenv myproject
+
+# #***** INI PIL *****
+# # Instalando Python Image Library.
+# yes | sudo apt-get install libjpeg-dev
+# yes | sudo apt-get install libfreetype6
+# yes | sudo apt-get install libfreetype6-dev
+# yes | sudo apt-get install zlib1g-dev
+# if [ ! -L "/usr/lib/libjpeg.so" ]; then
+#    sudo ln -s /usr/lib/x86_64-linux-gnu/libjpeg.so /usr/lib
+# fi
+# if [ ! -L "/usr/lib/libfreetype.so" ]; then
+#    sudo ln -s /usr/lib/x86_64-linux-gnu/libfreetype.so /usr/lib
+# fi
+# if [ ! -L "/usr/lib/libz.so" ]; then
+#    sudo ln -s /usr/lib/x86_64-linux-gnu/libz.so /usr/lib
+# fi
+# yes | sudo pip install PIL
+# #***** FIM PIL *****
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
+
+# 
+ENABLE_SESSIONS_TIMEOUT = True
+SESSION_TIMEOUT = 1 * 60 #segundos
+SESSION_SECURITY_WARN_AFTER = SESSION_TIMEOUT/3 #segundos
+
+#
+ENABLE_SIMULTANEOUS_SESSIONS_LOGINS = True
+
+# 
+ENABLE_CLICK_TRACKING = True
+
+# Root Dir e essencial para as demais variaveis do projeto. 
+ROOTDIR = os.path.realpath(os.path.dirname(__file__))
 
 ADMINS = (
     # ('Your Name', 'your_email@example.com'),
@@ -11,15 +58,117 @@ MANAGERS = ADMINS
 
 DATABASES = {
     'default': {
+        ## Enable SQLite database.
+        #***************************************
         'ENGINE': 'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': '/opt/myproject/ws.db',                      # Or path to database file if using sqlite3.
+        'NAME': '%s/myproject.db' % ROOTDIR,  # Or path to database file if using sqlite3.
         # The following settings are not used with sqlite3:
         'USER': '',
         'PASSWORD': '',
         'HOST': '',                      # Empty for localhost through domain sockets or '127.0.0.1' for localhost through TCP.
         'PORT': '',                      # Set to empty string for default.
+
+        ## Enable Amazon RDS for MySQL database.
+        # yes | sudo apt-get install python-pip
+        # yes | sudo easy_install -U distribute
+        # yes | sudo apt-get install libmysqlclient-dev
+        # yes | sudo apt-get install python2.7-dev
+        # yes | sudo pip install MySQL-python
+        #***************************************
+        # 'ENGINE": 'django.db.backends.mysql',
+        # 'NAME": 'myproject',
+        # 'USER": 'myproject',
+        # 'PASSWORD": '12qwaszx',
+        # 'HOST': 'myproject.cb7madzrmw4h.sa-east-1.rds.amazonaws.com',
+        # 'PORT': '3306',
+
+        'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
+        'LOCATION': 'django_cache',
+        #python manage.py createcachetable django_cache
+
+        #  Enable Amazon Elastic Cache
+        # yes | sudo apt-get install memcached
+        # yes | sudo apt-get install python-memcache
+        #***************************************
+        # 'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
+        # 'LOCATION': 'myproject.dzoo5z.cfg.sae1.cache.amazonaws.com:11211',
+
+        # Enable Amazon DynamoDB for Click Tracking
+        # yes | sudo pip install dynamodb-mapper
+        #***************************************
+        'CLICK_TABLE': 'click',
+        'READ_UNITS': 10,
+        'WRITE_UNITS' : 10,
+        
+        # Set AWS Region
+        'REGION' : 'us-east-1',
     }
 }
+
+CACHES = DATABASES
+
+#
+#
+#yes | sudo pip install django-ses
+# AWS_SES_REGION_NAME = DATABASES["default"]["REGION"]
+# AWS_SES_REGION_ENDPOINT = "email-smtp.us-east-1.amazonaws.com"
+#AWS_SES_ACCESS_KEY_ID = "AKIAJ22BNYZQGK7HFCQQ"
+#AWS_SES_SECRET_ACCESS_KEY = "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"
+
+#
+#yes | sudo pip install django-smtp-ssl
+EMAIL_BACKEND = "django_smtp_ssl.SSLEmailBackend"
+EMAIL_USE_TLS = True
+EMAIL_HOST = "email-smtp.us-east-1.amazonaws.com"
+EMAIL_HOST_USER = "AKIAITM6X4LO63PTKH3Q"
+EMAIL_HOST_PASSWORD = "ApDXzqDgnqmHxqG8G+B0XouMkPsyBGsgqyxlR5nO2Ql+"
+EMAIL_PORT = 465
+
+#http://django-storages.readthedocs.org/en/latest/backends/amazon-S3.html
+# pip install django-storage
+
+# Credenciais
+AWS_STORAGE_BUCKET_NAME = "labs.gabster.com.br"
+AWS_ACCESS_KEY_ID = "AKIAJ22BNYZQGK7HFCQQ" 
+AWS_SECRET_ACCESS_KEY = "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"
+
+# Upload
+DEFAULT_FILE_STORAGE = "storages.backends.s3boto.S3BotoStorage"
+
+# Collectstatic
+STATICFILES_STORAGE = "storages.backends.s3boto.S3BotoStorage"
+
+AWS_S3_SECURE_URLS = False
+
+#Se usar CloudFront
+AWS_S3_CUSTOM_DOMAIN = "d2jfhjcqz2ztph.cloudfront.net"
+
+#AWS_S3_CUSTOM_DOMAIN = '%s.s3-website-us-west-1.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
+
+
+
+
+# http://dynamodb-mapper.readthedocs.org/en/latest/
+# Amazon DynamoDB
+# yes | sudo pip install dynamodb-mapper
+# yes | sudo pip install pytz
+
+if ENABLE_CLICK_TRACKING:
+    def create_dynamoDB():
+        from dynamodb_mapper.model import ConnectionBorg
+        from portal.models_norel.click import Click
+        from django.conf import settings
+
+        conn = ConnectionBorg()
+        conn.set_region( '%s' % settings.DATABASES["default"]["REGION"] ) 
+
+        obj_click = Click()
+        try:
+            conn.create_table(obj_click, read_units=settings.DATABASES["default"]["READ_UNITS"], write_units=settings.DATABASES["default"]["WRITE_UNITS"], wait_for_active=False)
+        except Exception, args:
+            print Exception, args
+        
+        create_dynamoDB()
 
 # Hosts/domain names that are valid for this site; required if DEBUG is False
 # See https://docs.djangoproject.com/en/1.5/ref/settings/#allowed-hosts
@@ -29,11 +178,21 @@ ALLOWED_HOSTS = []
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
 # although not all choices may be available on all operating systems.
 # In a Windows environment this must be set to your system time zone.
-TIME_ZONE = 'America/Chicago'
+TIME_ZONE = "America/Sao_Paulo"
 
 # Language code for this installation. All choices can be found here:
 # http://www.i18nguy.com/unicode/language-identifiers.html
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'pt-br'
+DATABASE_OPTIONS = {"charset": "utf8"} 
+DEFAULT_CHARSET = "utf-8"
+
+LANGUAGES = (
+    ('pt-br', u'Portugues (Brasil)'),
+)
+
+# Install PT-BR Language Pack
+# yes | sudo apt-get install language-pack-pt
+# sudo locale-gen pt_BR.UTF-8
 
 SITE_ID = 1
 
@@ -50,22 +209,22 @@ USE_TZ = True
 
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/var/www/example.com/media/"
-MEDIA_ROOT = ''
+MEDIA_ROOT = '%s/media' % ROOTDIR
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash.
 # Examples: "http://example.com/media/", "http://media.example.com/"
-MEDIA_URL = ''
+MEDIA_URL = 'http://%s/media/' % AWS_S3_CUSTOM_DOMAIN
 
 # Absolute path to the directory static files should be collected to.
 # Don't put anything in this directory yourself; store your static files
 # in apps' "static/" subdirectories and in STATICFILES_DIRS.
 # Example: "/var/www/example.com/static/"
-STATIC_ROOT = '/opt/myproject/static'
+STATIC_ROOT = '%s/static' % ROOTDIR
 
 # URL prefix for static files.
 # Example: "http://example.com/static/", "http://static.example.com/"
-STATIC_URL = '/static/'
+STATIC_URL = 'http://%s/static/' % AWS_S3_CUSTOM_DOMAIN
 
 # Additional locations of static files
 STATICFILES_DIRS = (
@@ -93,13 +252,26 @@ TEMPLATE_LOADERS = (
 )
 
 MIDDLEWARE_CLASSES = (
-    'django.middleware.common.CommonMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
+    "django.middleware.cache.UpdateCacheMiddleware",
+    "django.middleware.common.CommonMiddleware",
+    "django.middleware.cache.FetchFromCacheMiddleware",
+    "django.middleware.transaction.TransactionMiddleware",
+
+    "django.middleware.csrf.CsrfViewMiddleware",
+    "django.contrib.sessions.middleware.SessionMiddleware",
+    "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "django.middleware.locale.LocaleMiddleware",
+    "django.contrib.messages.middleware.MessageMiddleware",
+    
+    "portal.middleware.multilogin_restrict.MultiLoginRestrictMiddleware",
+    "portal.middleware.session_expired.SessionExpiredMiddleware",
+
     # Uncomment the next line for simple clickjacking protection:
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
+)
+
+AUTHENTICATION_BACKENDS = (
+    "django.contrib.auth.backends.ModelBackend",
 )
 
 ROOT_URLCONF = 'myproject.urls'
@@ -122,9 +294,13 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     # Uncomment the next line to enable the admin:
     'django.contrib.admin',
+
+    #yes | sudo pip install django-storages
+    'storages',
+
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
-    'ws',
+    'portal',
 )
 
 # A sample logging configuration. The only tangible logging

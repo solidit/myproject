@@ -1,11 +1,12 @@
 myproject
 =========
 
-Web Service Django for training in AWS Autoscaling
+Web Service RESTFull in Django/Piston for trainning in AWS Autoscaling
 
 ### In Amazon AWS Console
 
 - Create a keypair myproject.pem
+    $ 
 - Create a Security Group 
     Enable ports ( 22 and 8000 )
 - Create t1.micro instance with Amazon Linux in us-east-1 region
