@@ -75,7 +75,8 @@ Settting AWS Credentials
 
     $ as-describe-auto-scaling-groups --region us-east-1
     $ as-delete-auto-scaling-group myprojectgroup --force-delete --region us-east-1
-    $ as-create-auto-scaling-group myprojectgroup --availability-zones us-east-1a --launch-configuration myprojectlc --load-balancers myprojectlb --max-size 5 --min-size 1 –-tag “k=Name, v=myproject” --region us-east-1
+    $ as-create-auto-scaling-group myprojectgroup --availability-zones us-east-1a --launch-configuration myprojectlc --load-balancers myprojectlb --max-size 5 --min-size 1 --region us-east-1
+    # as-create-or-update-tags votacaogroup --tag "id=votacaogroup, t=auto-scaling-group, k=Name, v=Web-Server-Votacao, p=true" --region sa-east-1
 
 ### Criando politicas de UpScale
 

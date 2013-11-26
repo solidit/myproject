@@ -120,30 +120,30 @@ CACHES = DATABASES
 EMAIL_BACKEND = "django_smtp_ssl.SSLEmailBackend"
 EMAIL_USE_TLS = True
 EMAIL_HOST = "email-smtp.us-east-1.amazonaws.com"
-EMAIL_HOST_USER = "AKIAITM6X4LO63PTKH3Q"
-EMAIL_HOST_PASSWORD = "ApDXzqDgnqmHxqG8G+B0XouMkPsyBGsgqyxlR5nO2Ql+"
+EMAIL_HOST_USER = "XXXXXXXXXXXXXXXXXXX"
+EMAIL_HOST_PASSWORD = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 EMAIL_PORT = 465
 
 #http://django-storages.readthedocs.org/en/latest/backends/amazon-S3.html
 # pip install django-storage
 
 # Credenciais
-AWS_STORAGE_BUCKET_NAME = "labs.gabster.com.br"
-AWS_ACCESS_KEY_ID = "AKIAJ22BNYZQGK7HFCQQ" 
-AWS_SECRET_ACCESS_KEY = "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"
+AWS_STORAGE_BUCKET_NAME = "myproject"
+AWS_ACCESS_KEY_ID = "XXXXXXXXXXXXXXXXXXX"
+AWS_SECRET_ACCESS_KEY = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 
 # Upload
 DEFAULT_FILE_STORAGE = "storages.backends.s3boto.S3BotoStorage"
 
 # Collectstatic
 STATICFILES_STORAGE = "storages.backends.s3boto.S3BotoStorage"
-
 AWS_S3_SECURE_URLS = False
 
 #Se usar CloudFront
-AWS_S3_CUSTOM_DOMAIN = "d2jfhjcqz2ztph.cloudfront.net"
+#AWS_S3_CUSTOM_DOMAIN = "d2jfhjcqz2ztph.cloudfront.net"
 
 #AWS_S3_CUSTOM_DOMAIN = '%s.s3-website-us-west-1.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
+AWS_S3_CUSTOM_DOMAIN = '127.0.0.1/static_myproject'
 
 # http://dynamodb-mapper.readthedocs.org/en/latest/
 # Amazon DynamoDB
@@ -217,11 +217,13 @@ MEDIA_URL = 'http://%s/media/' % AWS_S3_CUSTOM_DOMAIN
 # Don't put anything in this directory yourself; store your static files
 # in apps' "static/" subdirectories and in STATICFILES_DIRS.
 # Example: "/var/www/example.com/static/"
-STATIC_ROOT = '%s/static' % ROOTDIR
+#STATIC_ROOT = '%s/static' % ROOTDIR
+STATIC_ROOT = '/Library/WebServer/Documents/static_myproject/'
 
 # URL prefix for static files.
 # Example: "http://example.com/static/", "http://static.example.com/"
-STATIC_URL = 'http://%s/static/' % AWS_S3_CUSTOM_DOMAIN
+#STATIC_URL = 'http://%s/static/' % AWS_S3_CUSTOM_DOMAIN
+STATIC_URL = 'http://%s/static_myproject/' % AWS_S3_CUSTOM_DOMAIN
 
 # Additional locations of static files
 STATICFILES_DIRS = (
